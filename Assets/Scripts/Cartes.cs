@@ -23,7 +23,6 @@ public class Cartes : MonoBehaviour
         TirerUneCarte("croupier");
         TirerUneCarte("joueur");
         TirerUneCarte("joueur");
-        //Melanger();
     }
 
     // Update is called once per frame
@@ -32,7 +31,7 @@ public class Cartes : MonoBehaviour
         
     }
 
-    void TirerUneCarte(string cible)
+    public void TirerUneCarte(string cible)
     {
         string carteTirer = "null";
         int choixCarte = 0;
@@ -45,38 +44,127 @@ public class Cartes : MonoBehaviour
         Debug.Log(carteTirer);
         if (cible == "joueur")
         {
-            if (joueur.carte1 == "null")
+            bool ajouter = false;
+            for (int i = 0; i < joueur.mainJoueur.Length; i++)
             {
-                joueur.carte1 = carteTirer;
+                if (joueur.mainJoueur[i] == "null" && ajouter == false)
+                {
+                    joueur.mainJoueur[i] = carteTirer;
+                    ajouter = true;
+                }
             }
-            else if (joueur.carte2 == "null")
-            {
-                joueur.carte2 = carteTirer;
-            }
-            else if (joueur.carte3 == "null")
-            {
-                joueur.carte3 = carteTirer;
-            }
+            CompterMain("joueur");
         }
         if (cible == "croupier")
         {
-            if (croupier.carteCroupier1 == "null")
+            bool ajouter = false;
+            for (int i = 0; i < croupier.mainCroupier.Length; i++)
             {
-                croupier.carteCroupier1 = carteTirer;
+                if (croupier.mainCroupier[i] == "null" && ajouter == false)
+                {
+                    croupier.mainCroupier[i] = carteTirer;
+                    ajouter = true;
+                }
             }
-            else if (croupier.carteCroupier2 == "null")
-            {
-                croupier.carteCroupier2 = carteTirer;
-            }
-            else if (croupier.carteCroupier3 == "null")
-            {
-                croupier.carteCroupier3 = carteTirer;
-            }
+            CompterMain("croupier");
         }
     }
 
-    void Melanger()
+    public void Melanger()
     {
         cartes = cartesPlein;
     }
+
+    // Compter la valeurs des mains
+    int CompterMain(string main)
+    {
+        if(main == "joueur")
+        {
+            int totalMain = 0;
+            for (int i = 0; i < joueur.mainJoueur.Length; i++)
+            {
+                if(joueur.mainJoueur[i] != "null")
+                {
+                    int valeurCarte = TestCarte(joueur.mainJoueur[i]);
+                    totalMain = (totalMain + valeurCarte);
+                }
+            }
+            Debug.Log("Total Main Joueur : " + totalMain);
+            return totalMain;
+        }
+        if(main == "croupier")
+        {
+            int totalMain = 0;
+            for (int i = 0; i < croupier.mainCroupier.Length; i++)
+            {
+                if(croupier.mainCroupier[i] != "null")
+                {
+                    int valeurCarte = TestCarte(croupier.mainCroupier[i]);
+                    totalMain = (totalMain + valeurCarte);
+                }
+            }
+            Debug.Log("Total Main Croupier : " + totalMain);
+            return totalMain;
+        }
+        return 0;
+    }
+
+    // Definir Valeur des cartes
+    int TestCarte(string textCarte)
+    {
+        if (textCarte == "1C")
+        {
+            return 1;
+        }
+        if (textCarte == "2C")
+        {
+            return 2;
+        }
+        if (textCarte == "3C")
+        {
+            return 3;
+        }
+        if (textCarte == "4C")
+        {
+            return 4;
+        }
+        if (textCarte == "5C")
+        {
+            return 5;
+        }
+        if (textCarte == "6C")
+        {
+            return 6;
+        }
+        if (textCarte == "7C")
+        {
+            return 7;
+        }
+        if (textCarte == "8C")
+        {
+            return 8;
+        }
+        if (textCarte == "9C")
+        {
+            return 9;
+        }
+        if (textCarte == "10C")
+        {
+            return 10;
+        }
+        if (textCarte == "VC")
+        {
+            return 11;
+        }
+        if (textCarte == "DC")
+        {
+            return 12;
+        }
+        if (textCarte == "RC")
+        {
+            return 13;
+        }
+        return 0;
+    }
+
 }

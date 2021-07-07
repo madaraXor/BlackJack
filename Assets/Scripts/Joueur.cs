@@ -6,21 +6,25 @@ using TMPro;
 public class Joueur : MonoBehaviour
 {
     public TextMeshProUGUI textCarte;
-    public string carte1;
-    public string carte2;
-    public string carte3;
-    //public string carte3;
+    public string[] mainJoueur = {"null", "null", "null", "null"};
+
     // Start is called before the first frame update
     void Start()
     {
-        carte1 = "null";
-        carte2 = "null";
-        carte3 = "null";
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        textCarte.text = carte1 + " " + carte2 + " " + carte3;
+        textCarte.text = mainJoueur[0] + " " + mainJoueur[1] + " " + mainJoueur[2] + " " + mainJoueur[3];
+    }
+
+    public void Reset()
+    {
+        for (int i = 0; i < mainJoueur.Length; i++)
+        {
+            mainJoueur[i] = "null";
+        }
     }
 }

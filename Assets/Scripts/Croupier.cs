@@ -6,20 +6,25 @@ using TMPro;
 public class Croupier : MonoBehaviour
 {
     public TextMeshProUGUI textCarteCroupier;
-    public string carteCroupier1;
-    public string carteCroupier2;
-    public string carteCroupier3;
+    public string[] mainCroupier = {"null", "null", "null", "null"};
     // Start is called before the first frame update
     void Start()
     {
-        carteCroupier1 = "null";
-        carteCroupier2 = "null";
-        carteCroupier3 = "null";
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        textCarteCroupier.text = carteCroupier1 + " " + carteCroupier2 + " " + carteCroupier3;
+        textCarteCroupier.text = mainCroupier[0] + " " + mainCroupier[1] + " " + mainCroupier[2] + " " + mainCroupier[3];
     }
+
+    public void Reset()
+    {
+        for (int i = 0; i < mainCroupier.Length; i++)
+        {
+            mainCroupier[i] = "null";
+        }
+    }
+
 }
