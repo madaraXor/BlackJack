@@ -8,161 +8,205 @@ public class Cartes : MonoBehaviour
     public Joueur joueur;
     public GameObject croupierObj;
     public Croupier croupier;
+    //public GameObject croupierObj;
+    public GameManager gameManager;
 
     // V = valet, D = dame, R = roi
     // C = coeur, K = carreau, P = pique, T = trefle
-    public string[] cartesPlein = {"1C", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "10C", "VC", "DC", "RC"};
-    public string[] cartes = {"1C", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "10C", "VC", "DC", "RC"};
+    public string[] cartesPlein;
+    public string[] cartes;
 
     // Start is called before the first frame update
     void Start()
     {
+
+    }
+
+    void Awake()
+    {
         joueur = joueurObj.GetComponent<Joueur>();
         croupier = croupierObj.GetComponent<Croupier>();
-        TirerUneCarte("croupier");
-        TirerUneCarte("croupier");
-        TirerUneCarte("joueur");
-        TirerUneCarte("joueur");
+
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void TirerUneCarte(string cible)
     {
-        string carteTirer = "null";
-        int choixCarte = 0;
-        while(carteTirer=="null")
+        if (CompterMain("joueur") <= 21)
         {
-            choixCarte = Random.Range(0, 12);
-            carteTirer = cartes[choixCarte];
-        }
-        cartes[choixCarte] = "null";
-        Debug.Log(carteTirer);
-        if (cible == "joueur")
-        {
-            bool ajouter = false;
-            for (int i = 0; i < joueur.mainJoueur.Length; i++)
+            if (cible == "joueur")
             {
-                if (joueur.mainJoueur[i] == "null" && ajouter == false)
+                string carteTirer = "";
+                int choixCarte = 0;
+                while (carteTirer == "")
                 {
-                    joueur.mainJoueur[i] = carteTirer;
-                    ajouter = true;
+                    choixCarte = Random.Range(0, (cartes.Length - 1));
+                    carteTirer = cartes[choixCarte];
+                }
+                cartes[choixCarte] = "";
+                bool ajouter = false;
+                for (int i = 0; i < joueur.mainJoueur.Length; i++)
+                {
+                    if (joueur.mainJoueur[i] == "" && ajouter == false)
+                    {
+                        joueur.mainJoueur[i] = carteTirer;
+                        ajouter = true;
+
+                    }
+                }
+                //Bust Joueur
+                if (CompterMain("joueur") > 21)
+                {
+                    gameManager.BustJoueur();
+                }
+                if (joueur.mainJoueur[0] != "" && joueur.mainJoueur[1] != "" && joueur.mainJoueur[2] == "" && joueur.totalMain == 21)
+                {
+                    //BlackJack Joueur
+                    gameManager.BlackJackJoueur();
                 }
             }
-            CompterMain("joueur");
         }
         if (cible == "croupier")
         {
+            string carteTirer = "";
+            int choixCarte = 0;
+            while (carteTirer == "")
+            {
+                choixCarte = Random.Range(0, (cartes.Length - 1));
+                carteTirer = cartes[choixCarte];
+            }
+            cartes[choixCarte] = "";
+            Debug.Log(carteTirer);
             bool ajouter = false;
             for (int i = 0; i < croupier.mainCroupier.Length; i++)
             {
-                if (croupier.mainCroupier[i] == "null" && ajouter == false)
+                if (croupier.mainCroupier[i] == "" && ajouter == false)
                 {
                     croupier.mainCroupier[i] = carteTirer;
                     ajouter = true;
                 }
             }
-            CompterMain("croupier");
+            //Bust Croupier
+            if (CompterMain("croupier") > 21)
+            {
+                gameManager.BustCroupier();
+            }
+            if (croupier.mainCroupier[0] != "" && croupier.mainCroupier[1] != "" && croupier.mainCroupier[2] == "" && croupier.totalMain == 21)
+            {
+                //BlackJack Croupier
+                gameManager.BlackJackCroupier();
+            }
         }
     }
 
     public void Melanger()
     {
-        cartes = cartesPlein;
+        Debug.Log("Melanger");
+        for (int i = 0; i < cartes.Length; i++)
+        {
+            cartes[i] = cartesPlein[i];
+        }
     }
 
+
+
     // Compter la valeurs des mains
-    int CompterMain(string main)
+    public int CompterMain(string main)
     {
-        if(main == "joueur")
+        if (main == "joueur")
         {
             int totalMain = 0;
             for (int i = 0; i < joueur.mainJoueur.Length; i++)
             {
-                if(joueur.mainJoueur[i] != "null")
+                if (joueur.mainJoueur[i] != "null")
                 {
-                    int valeurCarte = TestCarte(joueur.mainJoueur[i]);
+                    int valeurCarte = 0;
                     totalMain = (totalMain + valeurCarte);
+                    joueur.totalMain = totalMain;
+                    valeurCarte = TestCarte(joueur.mainJoueur[i], "joueur");
+                    totalMain = (totalMain + valeurCarte);
+                    joueur.totalMain = totalMain;
                 }
             }
-            Debug.Log("Total Main Joueur : " + totalMain);
+            //Debug.Log("Total Main Joueur : " + totalMain);
             return totalMain;
         }
-        if(main == "croupier")
+        if (main == "croupier")
         {
             int totalMain = 0;
             for (int i = 0; i < croupier.mainCroupier.Length; i++)
             {
-                if(croupier.mainCroupier[i] != "null")
+                if (croupier.mainCroupier[i] != "null")
                 {
-                    int valeurCarte = TestCarte(croupier.mainCroupier[i]);
+                    int valeurCarte = 0;
                     totalMain = (totalMain + valeurCarte);
+                    croupier.totalMain = totalMain;
+                    valeurCarte = TestCarte(croupier.mainCroupier[i], "croupier");
+                    totalMain = (totalMain + valeurCarte);
+                    croupier.totalMain = totalMain;
                 }
             }
-            Debug.Log("Total Main Croupier : " + totalMain);
+            //Debug.Log("Total Main Croupier : " + totalMain);
             return totalMain;
         }
         return 0;
     }
 
-    // Definir Valeur des cartes
-    int TestCarte(string textCarte)
+    public string TestGagnant(int valMainJoueur, int valMainCroupier)
     {
-        if (textCarte == "1C")
+        if (valMainJoueur >= valMainCroupier)
         {
-            return 1;
+            return "joueur";
         }
-        if (textCarte == "2C")
+        else
         {
-            return 2;
+            return "croupier";
         }
-        if (textCarte == "3C")
+
+    }
+
+    // Definir Valeur des cartes
+    int TestCarte(string textCarte, string dest)
+    {
+        for (int i = 1; i < 10; i++)
         {
-            return 3;
-        }
-        if (textCarte == "4C")
-        {
-            return 4;
-        }
-        if (textCarte == "5C")
-        {
-            return 5;
-        }
-        if (textCarte == "6C")
-        {
-            return 6;
-        }
-        if (textCarte == "7C")
-        {
-            return 7;
-        }
-        if (textCarte == "8C")
-        {
-            return 8;
-        }
-        if (textCarte == "9C")
-        {
-            return 9;
-        }
-        if (textCarte == "10C")
-        {
-            return 10;
-        }
-        if (textCarte == "VC")
-        {
-            return 11;
-        }
-        if (textCarte == "DC")
-        {
-            return 12;
-        }
-        if (textCarte == "RC")
-        {
-            return 13;
+            if (textCarte.Contains(i.ToString()) && textCarte.Contains("10"))
+            {
+                return 10;
+            }
+            else if (textCarte.Contains("1") && textCarte.Contains("10") == false)
+            {
+                if (dest == "joueur")
+                {
+                    if ((joueur.totalMain + 11) > 21)
+                    {
+                        return 1;
+                    }
+                    else
+                    {
+                        return 11;
+                    }
+                }
+                if (dest == "croupier")
+                {
+                    if ((croupier.totalMain + 11) > 21)
+                    {
+                        return 1;
+                    }
+                    else
+                    {
+                        return 11;
+                    }
+                }
+            }
+            else if (textCarte.Contains(i.ToString()))
+            {
+                return i;
+            }
+            else if (textCarte.Contains("V") || textCarte.Contains("D") || textCarte.Contains("R"))
+            {
+                return 10;
+            }
         }
         return 0;
     }

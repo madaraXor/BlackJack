@@ -13,14 +13,18 @@ public class GameManager : MonoBehaviour
     public GameObject boutonTirer;
     public GameObject boutonRester;
     public GameObject boutonRecommencer;
+    public GameObject panelMise;
+    public bool bustJoueur = false;
+    public bool bustCroupier = false;
 
 
     // Start is called before the first frame update
     void Start()
     {
         boutonRecommencer.SetActive(false);
-        //cartes = cartesObj.GetComponent<Cartes>();
-        GameOver();
+        boutonTirer.SetActive(false);
+        boutonRester.SetActive(false);
+        //StartGame();
     }
 
     // Update is called once per frame
@@ -34,34 +38,90 @@ public class GameManager : MonoBehaviour
         joueur.Reset();
         croupier.Reset();
         cartes.Melanger();
+        cartes.TirerUneCarte("croupier");
+        cartes.TirerUneCarte("croupier");
+        cartes.TirerUneCarte("joueur");
+        cartes.TirerUneCarte("joueur");
+        boutonTirer.SetActive(true);
+        boutonRester.SetActive(true);
         Debug.Log("StartGame");
     }
     // Si parti perdu : Melanger
     public void GameOver()
     {
-        joueur.Reset();
-        croupier.Reset();
-        cartes.Melanger();
         boutonRecommencer.SetActive(true);
+        boutonTirer.SetActive(false);
+        boutonRester.SetActive(false);
         Debug.Log("GameOver");
     }
-    public void Bust()
+    public void BustJoueur()
     {
-        joueur.Reset();
-        croupier.Reset();
-        cartes.Melanger();
-        Debug.Log("Buste");
+        GameOver();
+        bustJoueur = true;
+        Debug.Log("BustJoueur");
+    }
+    public void BustCroupier()
+    {
+        GameOver();
+        bustCroupier = true;
+        Debug.Log("BustCroupier");
+        joueur.AjouterGain(joueur.miseMain * 2);
     }
     public void Recommencer()
     {
+        bustCroupier = false;
+        bustJoueur = false;
+        joueur.Reset();
+        croupier.Reset();
         boutonRecommencer.SetActive(false);
-        StartGame();
         Debug.Log("Recommencer");
+        panelMise.SetActive(true);
     }
-    /*
-    public void BlackJack();
+    public void TirageCroupier()
+    {
+        while (bustCroupier == false && cartes.CompterMain("croupier") < 17)
+        {
+            cartes.TirerUneCarte("croupier");
+        }
+        Debug.Log("Test des mains");
+        TestVictoire();
+        GameOver();
+    }
+    public void TestVictoire()
+    {
+        if (bustCroupier == false && bustJoueur == false)
+        {
+            if (cartes.CompterMain("joueur") > cartes.CompterMain("croupier"))
+            {
+                Debug.Log("Joueur Gagne , x2");
+                joueur.AjouterGain(joueur.miseMain * 2);
+            }
+            if (cartes.CompterMain("joueur") < cartes.CompterMain("croupier"))
+            {
+                Debug.Log("Joueur Perd");
+            }
+            if (cartes.CompterMain("joueur") == cartes.CompterMain("croupier"))
+            {
+                Debug.Log("le Joueur ce rembourse");
+                joueur.AjouterGain(joueur.miseMain);
+            }
+        }
+    }
+
+    
+    public void BlackJackJoueur()
     {
         // Si on a un BlakJack
+        GameOver();
+        Debug.Log("BlackJack du Joueur");
+        joueur.AjouterGain(joueur.miseMain * 2.5f);
     }
-    */
+
+    public void BlackJackCroupier()
+    {
+        // Si le croupier a un BlakJack
+        GameOver();
+        Debug.Log("BlackJack du Croupier");
+    }
+    
 }
