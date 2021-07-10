@@ -11,7 +11,7 @@ public class Croupier : MonoBehaviour
     public Cartes cartes;
     public int totalMain = 0;
     public int nbCarte;
-    public bool carteCroupierAff;  
+    public bool carteCroupierAff;   
 
     // Start is called before the first frame update
     void Start()
