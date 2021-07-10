@@ -146,7 +146,7 @@ public class GameManager : MonoBehaviour
             Debug.Log("Test des mains");
         }
         TestVictoire();
-
+ 
     }
     public void TestVictoire()
     {

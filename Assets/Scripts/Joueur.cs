@@ -82,7 +82,7 @@ public class Joueur : MonoBehaviour
     }
 
     public void Rester()
-    {
+    { 
         if (rester == false)
         {
             rester = true;
