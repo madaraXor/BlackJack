@@ -5,9 +5,12 @@ using TMPro;
 
 public class Joueur : MonoBehaviour
 {
+    public GameObject ObjTextCarte;
     public TextMeshProUGUI textCarte;
-    public TextMeshProUGUI textargent;
+    public TextMeshProUGUI textArgent;
     public TextMeshProUGUI textMise;
+    public GameObject ObjTextMiseEnJeux;
+    public TextMeshProUGUI textMiseEnJeux;
     public string[] mainJoueur = { "", "", "", "", "", "", "" };
     public Cartes cartes;
     public float argent = 200f;
@@ -15,6 +18,8 @@ public class Joueur : MonoBehaviour
     public float miseMain = 0;
     public GameManager gameManager;
     public int totalMain = 0;
+    public int nbCarte;
+    public bool rester;
 
     // Start is called before the first frame update
     void Start()
@@ -25,9 +30,9 @@ public class Joueur : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        textCarte.text = mainJoueur[0] + " " + mainJoueur[1] + " " + mainJoueur[2] + " " + mainJoueur[3] + " " + mainJoueur[4] + " " + mainJoueur[5] + " " + mainJoueur[6] + " Total : " + cartes.CompterMain("joueur");
-        textargent.text = "argent : " + argent + "$";
-        textMise.text = "Mise : " + miseActuel;
+        textCarte.text = " Joueur : " + cartes.CompterMain("joueur");
+        textArgent.text = "Argent : " + argent + "$";
+        textMise.text = "Mise : " + miseActuel + "$";
     }
 
     public void Reset()
@@ -46,7 +51,10 @@ public class Joueur : MonoBehaviour
         }
         else
         {
-            Debug.Log("Pas assez d'argent");
+            if (gameManager.debugMode)
+            {
+                Debug.Log("Pas assez d'argent");
+            }
         }
     }
 
@@ -55,22 +63,35 @@ public class Joueur : MonoBehaviour
         if (argent >= miseActuel)
         {
             miseMain = miseActuel;
-            argent = (argent-miseActuel);
-            gameManager.StartGame();
+            argent = (argent - miseActuel);
+            gameManager.StartCoroutine("StartGame");
             gameManager.panelMise.SetActive(false);
             miseActuel = 0;
+            textMiseEnJeux.text = "Mise en jeux : " + miseMain + "$";
+            ObjTextMiseEnJeux.SetActive(true);
         }
     }
 
     public void AjouterGain(float gain)
     {
-        argent = (argent+gain);
-        Debug.Log("Le joueur Gagne : " + gain);
+        argent = (argent + gain);
+        if (gameManager.debugMode)
+        {
+            Debug.Log("Le joueur Gagne : " + gain);
+        }
     }
 
     public void Rester()
     {
-        gameManager.TirageCroupier();
+        if (rester == false)
+        {
+            rester = true;
+            gameManager.StartCoroutine("TirageCroupier");
+        }
+    }
+    public void ResetMise()
+    {
+        miseActuel = 0;
     }
 }
 

@@ -5,11 +5,14 @@ using TMPro;
 
 public class Croupier : MonoBehaviour
 {
+    public GameObject ObjTextCarteCroupier;
     public TextMeshProUGUI textCarteCroupier;
-    public string[] mainCroupier = {"", "", "", "", "", "", ""};
+    public string[] mainCroupier = { "", "", "", "", "", "", "" };
     public Cartes cartes;
     public int totalMain = 0;
-    
+    public int nbCarte;
+    public bool carteCroupierAff;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -19,7 +22,21 @@ public class Croupier : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        textCarteCroupier.text = mainCroupier[0] + " " + mainCroupier[1] + " " + mainCroupier[2] + " " + mainCroupier[3] + " " + mainCroupier[4] + " " + mainCroupier[5] + " " + mainCroupier[6] + " Total : " + cartes.CompterMain("croupier");
+        if (carteCroupierAff)
+        {
+            textCarteCroupier.text = " Croupier : " + cartes.CompterMain("croupier");
+        }
+        else
+        {
+            if ((cartes.TestCarte(mainCroupier[1], "croupier") + cartes.TestCarte(mainCroupier[2], "croupier") + cartes.TestCarte(mainCroupier[3], "croupier") + cartes.TestCarte(mainCroupier[4], "croupier")) == 1)
+            {
+                textCarteCroupier.text = " Croupier : " + 11;
+            }
+            else
+            {
+                textCarteCroupier.text = " Croupier : " + (cartes.TestCarte(mainCroupier[1], "croupier") + cartes.TestCarte(mainCroupier[2], "croupier") + cartes.TestCarte(mainCroupier[3], "croupier") + cartes.TestCarte(mainCroupier[4], "croupier"));
+            }
+        }
     }
 
     public void Reset()
